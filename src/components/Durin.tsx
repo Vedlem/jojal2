@@ -9,39 +9,33 @@ interface MediaDbEntry {
   media_type: 'MOVIE' | 'TV';
   abg_date: string | null;
   status: 'to-watch' | 'watched';
-  note: string | null; // Pour stocker les commentaires
+  title: string | null; // Titre descriptif
 }
 
 const formatToString = (item: Partial<MediaDbEntry>): string => {
   const idPart = typeof item.tmdb_id === 'string' && isNaN(parseInt(item.tmdb_id as string, 10))
     ? `"${item.tmdb_id}"`
     : item.tmdb_id;
-  
-  const datePart = item.abg_date ? ' ' + item.abg_date : '';
-  const notePart = item.note ? ' ' + item.note : '';
-
-  return `${item.media_type} ${idPart}${datePart}${notePart}`;
+  const datePart = item.abg_date ? ` ${item.abg_date}` : '';
+  const titlePart = item.title ? ` "${item.title}"` : '';
+  return `${item.media_type} ${idPart}${datePart}${titlePart}`.trim();
 };
 
 const parseFromString = (line: string, status: 'to-watch' | 'watched'): Partial<MediaDbEntry> => {
-  const trimmedLine = line.trim();
-  
-  // Regex pour extraire TYPE, ID, DATE optionnelle, et la NOTE (tout le reste)
-  const regex = /^(\S+)\s+("([^"]+)"|(\S+))(?:\s+([\d\w-]+))?\s*(.*)?$/;
-  const match = trimmedLine.match(regex);
+  // Regex pour capturer: TYPE, ID (nombre ou "texte"), DATE (optionnel), TITRE (optionnel, "texte")
+  const regex = /^(MOVIE|TVSHOW)\s+(?:(\d+)|"([^"]+)")(?:\s+([\d\-A-Za-z]+))?(?:\s+"([^"]+)")?$/;
+  const match = line.trim().match(regex);
 
   if (!match) {
-    return { tmdb_id: NaN };
+    return { tmdb_id: NaN }; // Format invalide
   }
 
   const type = match[1].toUpperCase() as 'MOVIE' | 'TV';
-  const idPart = match[3] || match[4];
-  const datePart = match[5] || null;
-  const notePart = match[6] || null;
+  const tmdb_id = match[2] ? parseInt(match[2], 10) : match[3]; // ID numérique ou ID texte
+  const abg_date = match[4] || null;
+  const title = match[5] || null; // Titre descriptif
 
-  const tmdb_id = isNaN(parseInt(idPart, 10)) ? idPart : parseInt(idPart, 10);
-
-  return { media_type: type, tmdb_id, abg_date: datePart, status, note: notePart };
+  return { media_type: type, tmdb_id, abg_date, title, status };
 };
 
 const Durin: React.FC = () => {
@@ -146,33 +140,24 @@ const Durin: React.FC = () => {
           return; // Bloque la sauvegarde
         }
       }
-      // --- Fin de la validation de format ---
+      // --- Fin de la validation ---
 
       const toWatchItems = toWatchLines.map(line => parseFromString(line, 'to-watch'));
       const watchedItems = watchedLines.map(line => parseFromString(line, 'watched'));
-      
-      const allItems = [...toWatchItems, ...watchedItems];
 
-      // Vérification des doublons (intra-liste et inter-listes)
-      const seen = new Set();
-      const duplicates = allItems.filter(item => {
-        const key = `${item.media_type}-${item.tmdb_id}`;
-        if (seen.has(key)) {
-          return true;
-        }
-        seen.add(key);
-        return false;
-      });
+      // Vérification des doublons
+      const watchedKeys = new Set(watchedItems.map(item => `${item.media_type}-${item.tmdb_id}`));
+      const conflictingItems = toWatchItems.filter(item => watchedKeys.has(`${item.media_type}-${item.tmdb_id}`));
 
-      if (duplicates.length > 0) {
-        const conflictList = duplicates.map(item => `${item.media_type} ${item.tmdb_id}`).join(', ');
-        setMessage(`Erreur : L'oeuvre(s) suivante(s) est/sont en double : ${conflictList}. Veuillez corriger les doublons.`);
+      if (conflictingItems.length > 0) {
+        const conflictList = conflictingItems.map(item => `${item.media_type} ${item.tmdb_id}`).join(', ');
+        setMessage(`Erreur : L'oeuvre suivante est présente dans les deux listes : ${conflictList}. Veuillez la retirer d'une des deux listes.`);
         setMessageType('error');
         setLoading(false);
         return; // Bloque la sauvegarde
       }
 
-      const newDbState = allItems;
+      const newDbState = [...toWatchItems, ...watchedItems];
 
       // Upsert
       const { error: upsertError } = await supabase.from('media').upsert(newDbState, {
