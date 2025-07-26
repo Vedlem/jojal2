@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: stretch;
   width: 100%;
+  padding-bottom: 5rem; /* Ajoute une marge en bas du site pour la visibilité */
   /* gap et padding sont supprimés, les marges des frames gèrent l'espacement */
 }
 
@@ -45,6 +46,7 @@
   height: 100%; /* S'assure que la carte remplit son frame */
   display: flex; /* Ajout pour une meilleure gestion du contenu interne */
   flex-direction: column; /* Ajout */
+  gap: 0rem; /* Espace entre l'image et le bloc d'info */
 }
 
 .media-card:hover {
@@ -64,22 +66,26 @@
 .media-card-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Pousse le titre en haut et les dates en bas */
+  justify-content: center; /* Centre verticalement le contenu */
+  align-items: center; /* Centre horizontalement le contenu */
   flex-grow: 1; /* Fait en sorte que cette section prenne toute la place restante */
-  padding-top: 10px; /* Espace entre l'image et le texte */
+  gap: 10px; /* Ajoute un espace entre le titre et les dates */
+  min-height: 100px; /* Crée un espace vertical minimum pour que le centrage fonctionne */
+  text-align: center; /* Aligne le texte des enfants au centre */
 }
 
 .media-card-info h3 {
-  margin: 0 0 10px 0;
+  margin: 0;
   font-size: 1.1em;
   /* --- Ajouts pour la troncature --- */
   white-space: nowrap;      /* Empêche le retour à la ligne */
   overflow: hidden;         /* Cache le texte qui dépasse */
   text-overflow: ellipsis;  /* Ajoute "..." à la fin */
+  width: 100%; /* Nécessaire pour que la troncature fonctionne avec flexbox */
 }
 
 .media-card-dates {
-  min-height: 2.4em; /* Rétablit la hauteur minimale pour garantir l'espace pour 2 dates */
+  /* min-height n'est plus utile ici */
 }
 
 .media-card-dates p {

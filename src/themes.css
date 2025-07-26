@@ -69,35 +69,43 @@ code { font-family: var(--font-special); }
 /* ========================================================================== */
 /* ---              THÈMES VALIDÉS (INTOCABLES)                         --- */
 /* ========================================================================== */
-.theme-native {
-  /* Fonts & Separator */
+.theme-native, .theme-native-borderless {
+  /* Uniquement les polices et couleurs de texte communes */
   --font-main: 'Nunito', sans-serif;
   --font-title: 'Poppins', sans-serif;
   --separator-bg: rgba(68, 68, 68, 0.3);
   --text-color: #e2e2e2;
   --title-color: #ffffff;
+}
 
-  /* Style du Cadre : DOIT être un conteneur TOTALEMENT INVISIBLE SANS PADDING */
-  --frame-padding: 0;
+/* Thème NATIVE - Effet 3D avec cadre distinct */
+.theme-native {
+  --frame-padding: 20px;
+  --frame-radius: 8px;
+  --frame-bg: #202020; /* Marge subtilement plus foncée */
+  --frame-border: 1px solid #333; /* Bordure discrète */
+  --frame-shadow: 0 5px 10px rgba(0,0,0,0.4); /* Ombre plus douce */
+
+  /* La carte intérieure se détache */
+  --card-bg-color: #242424; /* Couleur d'origine */
+  --card-border: 1px solid #444; /* Bordure d'origine */
+  --card-shadow: none; /* Pas d'ombre sur la carte intérieure */
+  --card-radius: 4px; /* Coins plus serrés */
+}
+
+/* Thème NATIVE BORDERLESS - La carte est le seul élément visible */
+.theme-native-borderless {
+  --frame-padding: 15px; /* Juste de l'espacement invisible */
+  --frame-radius: 8px;
   --frame-bg: transparent;
   --frame-border: none;
   --frame-shadow: none;
-  
-  /* Reset des effets EvolvedFrames pour ce thème */
-  --newgen-bg: transparent;
-  --newgen-border: none;
-  --newgen-overlay: transparent;
 
-  /* Style de la Carte : redevient l'élément visuel principal AVEC SON PROPRE PADDING */
+  /* La carte est l'élément visuel principal */
   --card-bg-color: #242424;
   --card-border: 1px solid #444;
-  --card-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  --card-shadow: 0 4px 8px rgba(0,0,0,0.4); /* L'ombre est ici */
   --card-radius: 8px;
-}
-
-/* Règle spécifique pour que le thème native retrouve son padding interne */
-.theme-native .media-card {
-  padding: 15px;
 }
 
 
@@ -155,10 +163,15 @@ code { font-family: var(--font-special); }
 .theme-princier-2 .media-card-frame::after { bottom: 5px; right: 10px; transform: rotate(180deg); }
 .theme-princier-2 .media-card { background: transparent; padding: 0; }
 
+/* On force un espace sous l'image pour ce thème spécifique */
+.theme-princier-2 .media-card img {
+  margin-bottom: 0.5rem;
+}
+
 /* Spécificité ERv5 demandée pour les titres, corrigée pour cibler h1 */
 .theme-princier-2 .media-list h1 {
   font-family: 'Cinzel Decorative', serif;
-  color: #c9a552; /* Couleur --lantern-yellow du thème Hunt, pour un match parfait */
+  color: var(--title-color); /* Utilise la couleur du thème pour la cohérence */
 }
 
 /* --- CASTLEVANIA - Symphonie de la Nuit (Evolved) --- */
@@ -169,7 +182,8 @@ code { font-family: var(--font-special); }
   --text-color: #5a3e2b; /* Texte plus sombre pour un meilleur contraste sur le parchemin */
   --title-color: #B71C1C;
   --accent-color: #ffd700;
-  --separator-bg: rgba(44, 29, 18, 0.5); /* Couleur pierre sombre, unie et discrète */
+  --separator-bg: rgba(183, 28, 28, 0.4); /* Rouge sang, discret et uniforme */
+  /* Or, pour la visibilité */
 
   /* --- EvolvedBackground - Mur du château --- */
   --bg-color: #1a1a1a;
@@ -177,8 +191,10 @@ code { font-family: var(--font-special); }
   --bg-vignette: radial-gradient(ellipse at center, transparent 30%, #000 110%);
   --bg-blend-mode: multiply;
 
-  --card-border: none;
+  --frame-radius: 12px; /* Coins arrondis pour le CADRE en parchemin */
+  --card-border: 1px solid var(--title-color); /* Bordure rouge sang, subtile */
   --card-shadow: none;
+  --card-radius: 10px; /* Coins arrondis pour la CARTE intérieure */
 }
 
 /* CADRE DE L'ITEM CONSERVÉ COMME DEMANDÉ */
@@ -187,11 +203,17 @@ code { font-family: var(--font-special); }
   background: #fdf5e6 url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGIwVFBkiHxweHBwgJC4nJRMUFhMXGBsbHRsVEQ//////////////////////////////////////////////////////////////////////////////////////////////////wAALCAAsACwBAREA/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBAUBAgMI/9oACAEBAAAAAPfQAACgAyoCgAAAAAADGVrGgA+z1nO3bAH7+Hj8uG+gA+3nO9nU/QAfe5nNlq9AD9O05TQAe4yJmZkAPHwAAAAAABgAAAf/EACsQAAEEAQIDBwUBAAAAAAAAAAECAwQFABEGEhMhMUEHFCJRYSIjMkJhcf/aAAgBAQABPwD9okpSknAABJPkBk03rOmU+plu4wVqBwQlYJ/K7pajQWVPzJDcdpAyVrUEge5NMX/TjDyGpF3htrWcBKlgkn6FfUqNCYVIlyG2GU81rUEgfk03q+mXXOmi7Q1LzgNhwFWfoV3VNEhOlp+7RUqBwQFnI+1Vd4tV0bU9ap7EtCDgltQVsfl3jT8G7W2Ra5iSpqQgJWAcHBII/YjvXWtS0zeG7JbrWzKYchIfWtbgBCipxOCM9PCjv9M6lqKzNudqajv8A4lZCnB/uIzSmp6hY71Gsl4tTEduWFFpbTgcBKeYIzx4GvS2q6hcb3LsV5tjcR+Oyl4LQ4FBQUogYI48aK2u4yZc6BEnsvSYJAkNJOVNkjOD9jXt/1HqNyuq7Ne7UzEltMJeHlrCgQpRGOOOMUqVChT4qo0+O2/HcGFtrSFJUPqDWkaTaNJR3GbY++6HSFK8ZQUfAAcJHArStM23SjLrEB15wOqClF1QUcgY4wBX/xAAmEQACAQMDAwQDAAAAAAAAAAABAgMABBEFEhMhECIxFEEiIzJC/9oACAECAQE/APgq1t7icZhiZwO4HA/Vb21t7bJljCFuCcdRTuUUs7BVHJJ4FVt1PdSNGsXhA92JyePYVjZ2Nrhv8AqzJwcHlE/t57UuTk5OTXhQv4gQSq/8AkI5J9818pB5Ff/EACgRAAICAQQBAwQDAAAAAAAAAAECAAMRBBIhBRATFCIyQRQiM0Jhcf/aAAgBAwEBPwD+goqR1DKwIPQg8zJq1B2wGxtB52jgH89xNdU1X7t4S2245CgflR7n2m1tN19tji+458tOQPyJ6mZV1FtdTLLi8Rj4R7Ecj89hE6l0z7N5SyN5Vi5UfIPuPoR0R3PIn//2Q=="); /* Texture parchemin */
   box-shadow: 0 10px 30px rgba(0,0,0,0.7);
   border: 10px solid #2c1d12;
-  border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAArVJREFUaAXtV8tOFEEQ/s45M7OzsSAb8DBI7Bx4Ah5Apw0GQuKkCcbDgFhKBCds6MmLsPAQSNw4eAA2UoQjD7CEiRMnYOMhJ3c3k80MvI8qQVFVMzPzEzjV1dVTfV19vbo7+NcF/weC+O1/yF8oPj34IHFmZmaW3NxcP4fD8RCSyeQz8/n8z3A4nIeGhn4mIOS3goB+v3+L2+3+cnJy8sI4jn8AIFdXVy8ZDocfEovFtgBiA2AMYwzS6/V/kEgkvsM4jcFg8B/keX7A6/W+AWCz2fxMJpM/AM4bjcbH+v3+3wAwm82eMxgMXwKIr16v/wXGMAZpr9c7B8Bms3kCgYDP2u22pVKpf/P5/CePx+MNgGq1eicSiXwGgG63+xIBcwDY7XZHZrP5oHA4nNu2bRu2b98+B8A0Ta+FQuFLAMKApmnvG43G02Kx+LdYLL5pNBp/jMfj/YyxAXAWgM1ir9f7RyaT+S6Xy/0NAP/t7u5m3/d/jY+PT2Hcj/x+P+x2uy8YjcbD9Xr9zWQyuZ1Op3sAdru993g8/p5lWS6SyeR/APB5nmedpultdrt9J5VK/RwhJEmqbrd7LxaL/bVarY9lWV6SJIUA8Dw/EIlE/gXAGIZsNBp/aDQa30VR9AMAgNVq/VksFv8UwBgmGIZhAKCU4zi9gAD4Q0KyLMvjZrP5WyKRyG632x8B4P0zYwwYhhGEEGOMwX23ACCEqNVqfTabza+VSqX7hRDyvK+rq5tcXV1dZBiGEAJYlhVFUZIkSaPR6DcAcrkcDof5fD6lUqk4nU7xeDySySSdThdCCAgh5Hnebrd7o9GoVCqVcrnck0QiMRgMHk3TfPM838/n889isfgj/PwAOp1udjwe/wPzE8B8fM0gMwAAAABJRU5ErkJggg==) 20 stretch;
+  border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAArVJREFUaAXtV8tOFEEQ/s45M7OzsSAb8DBI7Bx4Ah5Apw0GQuKkCcbDgFhKBCds6MmLsPAQSNw4eAA2UoQjD7CEiRMnYOMhJ3c3k80MvI8qQVFVMzPzEzjV1dVTfV19vbo7+NcF/weC+O1/yF8oPj34IHFmZmaW3NxcP4fD8RCSyeQz8/n8z3A4nIeGhn4mIOS3goB+v3+L2+3+cnJy8sI4jn8AIFdXVy8ZDocfEovFtgBiA2AMYwzS6/V/kEgkvsM4jcFg8B/keX7A6/W+AWCz2fxMJpM/AM4bjcbH+v3+3wAwm82eMxgMXwKIr16v/wXGMAZpr9c7B8Bms3kCgYDP2u22pVKpf/P5/CePx+MNgGq1eicSiXwGgG63+xIBcwDY7XZHZrP5oHA4nNu2bRu2b98+B8A0Ta+FQuFLAMKApmnvG43G02Kx+LdYLL5pNBp/jMfj/YyxAXAWgM1ir9f7RyaT+S6Xy/0NAP/t7u5m3/d/jY+PT2Hcj/x+P+x2uy8YjcbD9Xr9zWQyuZ1Op3sAdru993g8/p5lWS6SyeR/APB5nmedpultdrt9J5VK/RwhJEmqbrd7LxaL/bVarY9lWV6SJIUA8Dw/EIlE/gXAGIZsNBp/aDQa30VR9AMAgNVq/VksFv8UwBgmGIZhAKCU4zi9gAD4Q0KyLMvjZrP5WyKRyG632x8B4P0zYwwYhhGEEGOMwX23ACCEqNVqfTabza+VSqX7hRDyvK+rq5tcXV1dZBiGEAJYlhVFUZIkSaPR6DcAcrkcDof5fD6lUqk4nU7xeDySySSdThCCAgh5Hnebrd7o9GoVCqVcrnck0QiMRgMHk3TfPM838/n889isfgj/PwAOp1udjwe/wPzE8B8fM0gMwAAAABJRU5ErkJggg==) 20 stretch;
 }
 .theme-castlevania .media-card {
   background: transparent;
-  padding: 5px;
+  padding: 0; /* On retire le padding qui ne fonctionnait pas */
+  gap: 0; /* On annule le gap global pour ce thème */
+}
+
+/* On force un espace sous l'image pour ce thème spécifique */
+.theme-castlevania .media-card img {
+  margin-bottom: 0rem; /* La valeur qui marche pour créer l'écart ! */
 }
 
 /* --- HALLOWEEN - La Nuit des Farces (ERv5) --- */
@@ -247,11 +269,13 @@ code { font-family: var(--font-special); }
 }
 
 /* --- Spécificités Typographiques (Loi Fondamentale ERv5) --- */
-.theme-halloween h3 {
-  font-size: 2rem;
+/* Règle inutile car elle cible le mauvais thème (theme-halloween), on la supprime.
+.theme-halloween .media-card-info h3 {
+  font-size: 20rem; 
   letter-spacing: 1px;
   text-shadow: 2px 2px 0px var(--slime-green), 4px 4px 0px rgba(0,0,0,0.4);
 }
+*/
 
 .theme-halloween .media-card:hover {
   animation: halloween-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
@@ -263,6 +287,11 @@ code { font-family: var(--font-special); }
   --font-title: 'Creepster', cursive; --font-main: 'Nunito', sans-serif; --text-color: #fdfdfd; --title-color: #f39c12; --accent-color: #f39c12; --bg-color: #000; --bg-layer-2-texture: url('/textures/foggy-birds.png'); --frame-padding: 10px; --separator-bg: rgba(243, 156, 18, 0.3); }
 .theme-halloween-2 .media-card-frame { padding: 10px; background: #1a1a1a; border: 1px solid #f39c12; box-shadow: inset 0 0 15px #f39c12, 0 0 10px #f39c12; border-radius: 5px;}
 .theme-halloween-2 .media-card { background: transparent; }
+
+/* On cible maintenant le BON thème (halloween-2) avec une règle spécifique et fonctionnelle */
+.theme-halloween-2 .media-card-info h3 {
+  font-size: 1.5rem;
+}
 
 /* --- JOJAL - La Fraisière Moderne (ERv5 Re-refonte) --- */
 .theme-jojal {

@@ -20,6 +20,7 @@ const ThemeSelector: React.FC = () => {
         {isMenuOpen && (
           <div className="dropdown-content">
             <button onClick={() => handleThemeChange('native')}>Native</button>
+            <button onClick={() => handleThemeChange('native-borderless')}>Native Borderless</button>
 
             <div className="submenu">
               <button>Coco »</button>
