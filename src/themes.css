@@ -100,7 +100,7 @@ code { font-family: var(--font-special); }
   --frame-bg: transparent;
   --frame-border: none;
   --frame-shadow: none;
-
+  
   /* La carte est l'élément visuel principal */
   --card-bg-color: #242424;
   --card-border: 1px solid #444;

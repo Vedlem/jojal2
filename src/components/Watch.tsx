@@ -49,45 +49,43 @@ const Watch: React.FC = () => {
 
         if (error) throw error;
 
-        // On filtre les données corrompues AVANT de faire les appels API
-        const validMediaFromDb = mediaFromDb.filter(item => {
-          const id = Number(item.tmdb_id);
-          return id && !isNaN(id);
-        });
+        const mediaInfoPromises = mediaFromDb.map(async (item: MediaDbEntry) => {
+          const numericId = Number(item.tmdb_id);
 
-        const mediaInfoPromises = validMediaFromDb.map(async (item: MediaDbEntry) => {
-          // Si l'ID est une chaîne de caractères, on ne contacte pas l'API TMDB
-          if (typeof item.tmdb_id === 'string') {
-            return {
-              ...item,
-              title: item.tmdb_id, // Le titre est l'ID lui-même
-              poster_path: '',
-              release_date: '',
-            };
+          // Si l'ID est un vrai nombre, on contacte TMDB
+          if (!isNaN(numericId) && numericId > 0) {
+            try {
+              let mediaType = item.media_type.toLowerCase();
+              if (mediaType === 'tvshow') {
+                mediaType = 'tv'; // Correction pour l'API TMDB qui attend "tv" et non "tvshow"
+              }
+              const response = await axios.get(
+                `https://api.themoviedb.org/3/${mediaType}/${numericId}?api_key=${TMDB_API_KEY}&language=fr-FR`
+              );
+              return {
+                ...item,
+                title: mediaType === 'movie' ? response.data.title : response.data.name,
+                poster_path: response.data.poster_path,
+                release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
+              };
+            } catch (error) {
+              console.error(`Erreur pour TMDB ID ${item.tmdb_id}:`, error);
+              return {
+                ...item,
+                title: `ID Invalide: ${item.tmdb_id}`,
+                poster_path: '',
+                release_date: '',
+              };
+            }
           }
 
-          // Si l'ID est un nombre, on procède normalement
-          try {
-            const mediaType = item.media_type.toLowerCase();
-            const response = await axios.get(
-              `https://api.themoviedb.org/3/${mediaType}/${item.tmdb_id}?api_key=${TMDB_API_KEY}&language=fr-FR`
-            );
-            return {
-              ...item,
-              title: mediaType === 'movie' ? response.data.title : response.data.name,
-              poster_path: response.data.poster_path,
-              release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
-            };
-          } catch (error) {
-            // En cas d'erreur (ex: ID non trouvé), on crée un item de remplacement
-            console.error(`Erreur pour TMDB ID ${item.tmdb_id}:`, error);
-            return {
-              ...item,
-              title: `ID Invalide: ${item.tmdb_id}`,
-              poster_path: '', // Forcera l'affichage du placeholder
-              release_date: '',
-            };
-          }
+          // Si l'ID est une chaîne de caractères (un titre personnalisé), on crée un placeholder
+          return {
+            ...item,
+            title: String(item.tmdb_id),
+            poster_path: '',
+            release_date: '',
+          };
         });
 
         const allMedia: Media[] = await Promise.all(mediaInfoPromises);
