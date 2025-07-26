@@ -50,16 +50,27 @@ const Watch: React.FC = () => {
         if (error) throw error;
 
         const mediaInfoPromises = mediaFromDb.map(async (item: MediaDbEntry) => {
-          const mediaType = item.media_type.toLowerCase();
-          const response = await axios.get(
-            `https://api.themoviedb.org/3/${mediaType}/${item.tmdb_id}?api_key=${TMDB_API_KEY}&language=fr-FR`
-          );
-          return {
-            ...item,
-            title: mediaType === 'movie' ? response.data.title : response.data.name,
-            poster_path: response.data.poster_path,
-            release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
-          };
+          try {
+            const mediaType = item.media_type.toLowerCase();
+            const response = await axios.get(
+              `https://api.themoviedb.org/3/${mediaType}/${item.tmdb_id}?api_key=${TMDB_API_KEY}&language=fr-FR`
+            );
+            return {
+              ...item,
+              title: mediaType === 'movie' ? response.data.title : response.data.name,
+              poster_path: response.data.poster_path,
+              release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
+            };
+          } catch (error) {
+            // En cas d'erreur (ex: ID non trouvé), on crée un item de remplacement
+            console.error(`Erreur pour TMDB ID ${item.tmdb_id}:`, error);
+            return {
+              ...item,
+              title: `ID Invalide: ${item.tmdb_id}`,
+              poster_path: '', // Forcera l'affichage du placeholder
+              release_date: '',
+            };
+          }
         });
 
         const allMedia: Media[] = await Promise.all(mediaInfoPromises);
@@ -95,7 +106,7 @@ const Watch: React.FC = () => {
               <div className="media-card-info">
                 <h3>{media.title}</h3>
                 <div className="media-card-dates">
-                  <p>Sortie: {formatDate(media.release_date)}</p>
+                  {media.release_date && <p>Sortie: {formatDate(media.release_date)}</p>}
                   {media.status === 'watched' && media.abg_date && (
                     <p>Vu le: {media.abg_date}</p>
                   )}
