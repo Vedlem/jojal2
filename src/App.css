@@ -6,7 +6,42 @@
 }
 
 .App {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.background-container,
+.background-container::before,
+.background-container::after {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  transition: opacity 0.5s ease;
+}
+
+.background-container {
+  background-color: var(--bg-color);
+  background-image: var(--bg-layer-1-image);
+  background-size: cover;
+  background-position: center;
+  opacity: 1;
+}
+
+.background-container::before {
+  content: '';
+  background-image: var(--bg-layer-2-texture), var(--bg-layer-3-gradient);
+  background-blend-mode: var(--bg-blend-mode, normal);
+  opacity: 0.5;
+}
+
+.background-container::after {
+  content: '';
+  background-image: var(--bg-vignette);
+  opacity: 1;
 }

@@ -1,0 +1,441 @@
+/* ========================================================================== */
+/* ---                     BASE DE STYLE & VARIABLES                    --- */
+/* ========================================================================== */
+:root {
+  --font-main: 'Poppins', sans-serif; --font-title: 'Poppins', sans-serif; --font-special: 'Share Tech Mono', monospace;
+  --text-color: #e2e2e2; --title-color: #ffffff; --accent-color: #646cff;
+  --bg-color: #1a1a1a; --bg-image: none; --bg-blend-mode: normal;
+  --bg-layer-1-image: none; --bg-layer-2-texture: none; --bg-layer-3-gradient: none; --bg-vignette: none;
+  --card-bg-color: #242424; --card-padding: 15px; --card-border: 1px solid #444; --card-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); --card-radius: 8px;
+  --frame-padding: 0; --frame-bg: transparent; --frame-border: none; --frame-shadow: none; --frame-radius: 0;
+  
+  /* --- Variables pour EvolvedSeparator --- */
+  --separator-width: 1px; /* Largeur réduite pour plus de discrétion */
+  --separator-bg: rgba(100, 108, 255, 0.3); /* Couleur unie et discrète par défaut */
+  --separator-border-left: none;
+  --separator-border-right: none;
+  --separator-margin-x: 2rem;
+}
+body { font-family: var(--font-main); background-color: var(--bg-color); background-image: var(--bg-image); background-blend-mode: var(--bg-blend-mode); background-size: cover; background-attachment: fixed; transition: background-color 0.5s ease; }
+h1, h2 { font-family: var(--font-title); color: var(--title-color); font-weight: 700; transition: color 0.4s ease; text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+h3 { font-family: var(--font-title); color: var(--title-color); font-size: 2rem; }
+code { font-family: var(--font-special); }
+.media-card-frame {
+  padding: var(--frame-padding, 15px); /* Padding est maintenant géré ici pour tous */
+  background: var(--newgen-bg, var(--frame-bg)); /* La texture de la bordure est appliquée ici */
+  border: var(--frame-border);
+  box-shadow: var(--frame-shadow);
+  border-radius: var(--frame-radius);
+  transition: all 0.4s ease;
+  position: relative;
+  /* On s'assure que le contenu est toujours au-dessus des nouvelles couches */
+  z-index: 1; 
+}
+
+/* Les nouvelles couches pour les EvolvedFrames */
+.media-card-frame::before,
+.media-card-frame::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: var(--frame-radius);
+  pointer-events: none; /* Pour pouvoir cliquer à travers */
+  transition: all 0.4s ease;
+}
+
+/* Couche de fond (texture, couleur unie...) */
+.media-card-frame::before {
+  /* Ce pseudo-élément peut être réutilisé pour d'autres effets */
+  background: transparent;
+  z-index: -2;
+}
+
+/* Couche d'ornement (bordure, image de cadre...) */
+.media-card-frame::after {
+  border: var(--newgen-border, none);
+  background: var(--newgen-overlay, transparent);
+  z-index: -1;
+}
+
+.media-card {
+  /* Le padding est enlevé d'ici */
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  background-color: var(--card-bg-color);
+  border-radius: var(--card-radius);
+  height: 100%;
+}
+
+/* ========================================================================== */
+/* ---              THÈMES VALIDÉS (INTOCABLES)                         --- */
+/* ========================================================================== */
+.theme-native {
+  /* Fonts & Separator */
+  --font-main: 'Nunito', sans-serif;
+  --font-title: 'Poppins', sans-serif;
+  --separator-bg: rgba(68, 68, 68, 0.3);
+  --text-color: #e2e2e2;
+  --title-color: #ffffff;
+
+  /* Style du Cadre : DOIT être un conteneur TOTALEMENT INVISIBLE SANS PADDING */
+  --frame-padding: 0;
+  --frame-bg: transparent;
+  --frame-border: none;
+  --frame-shadow: none;
+  
+  /* Reset des effets EvolvedFrames pour ce thème */
+  --newgen-bg: transparent;
+  --newgen-border: none;
+  --newgen-overlay: transparent;
+
+  /* Style de la Carte : redevient l'élément visuel principal AVEC SON PROPRE PADDING */
+  --card-bg-color: #242424;
+  --card-border: 1px solid #444;
+  --card-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  --card-radius: 8px;
+}
+
+/* Règle spécifique pour que le thème native retrouve son padding interne */
+.theme-native .media-card {
+  padding: 15px;
+}
+
+
+.theme-star-citizen { --font-title: 'Poppins', sans-serif; --font-main: 'Share Tech Mono', monospace; --text-color: #d5d5d5; --title-color: #ffffff; --bg-color: #0b1014; --bg-layer-2-texture: url('https://www.transparenttextures.com/patterns/stardust.png'); --card-bg-color: rgba(26, 34, 43, 0.85); --card-border: 1px solid #5d677a; --card-shadow: 0 0 15px rgba(242, 199, 93, 0.2); --accent-color: #f2c75d; --frame-padding: 15px; --separator-bg: rgba(242, 199, 93, 0.3); }
+.theme-siegfried { --font-title: 'Cinzel', serif; --font-main: 'Crimson Text', serif; --text-color: #CFD8DC; --title-color: #ffffff; --bg-color: #1A237E; --bg-layer-2-texture: url('/textures/dark-matter.png'); --card-bg-color: rgba(26, 35, 126, 0.75); --card-border: 1px solid #81D4FA; --card-shadow: 0 0 18px rgba(129, 212, 250, 0.3); --accent-color: #81D4FA; --frame-padding: 15px; --separator-bg: rgba(129, 212, 250, 0.3); }
+.theme-princier { --font-title: 'Cinzel', serif; --font-main: 'Crimson Text', serif; --text-color: #2c3e50; --title-color: #c5a43b; --accent-color: #c5a43b; --bg-color: #f5f2e9; --bg-layer-2-texture: url('/textures/subtle-white-feathers.png'); --card-border: none; --card-shadow: none; --card-bg-color: #FAF6F0; --frame-padding: 0; --separator-bg: rgba(197, 164, 59, 0.3); }
+.theme-princier .media-card-frame { border: 12px solid; border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cstyle%3Epath%7Bfill:none;stroke:%23c5a43b;stroke-width:4px%7D%3C/style%3E%3Cpath d='M0 50h25M75 50h25M50 0v25M50 75v25M25 25h50v50H25z'/%3E%3C/svg%3E") 25 / 1 / 0 stretch; --frame-shadow: 0 0 20px rgba(0,0,0,0.2); }
+.theme-halloween-2 { --font-title: 'Creepster', cursive; --font-main: 'Nunito', sans-serif; --text-color: #fdfdfd; --title-color: #f39c12; --accent-color: #f39c12; --bg-color: #000; --bg-layer-2-texture: url('/textures/foggy-birds.png'); --frame-padding: 10px; --separator-bg: rgba(243, 156, 18, 0.3); }
+.theme-halloween-2 .media-card-frame { padding: 10px; background: #1a1a1a; border: 1px solid #f39c12; box-shadow: inset 0 0 15px #f39c12, 0 0 10px #f39c12; border-radius: 5px;}
+.theme-halloween-2 .media-card { background: transparent; }
+
+/* Plus besoin de ça */
+/* On garde old-star-citizen avec l'URL externe pour l'archive */
+/* .theme-old-star-citizen { ... } */
+
+/* ========================================================================== */
+/* ---           THÈMES REFAITS (VERSION FURIA ARTISTICA)               --- */
+/* ========================================================================== */
+.theme-destiny, .theme-nier, .theme-princier-2, .theme-vampire, .theme-castlevania, .theme-jojal, .theme-halloween {
+  --card-border: none; --card-shadow: none;
+}
+/* --- DESTINY 2 --- */
+.theme-destiny {
+  --font-title: 'Poppins', sans-serif; --font-main: 'Share Tech Mono', monospace;
+  --text-color: #d5d5d5; --title-color: #ffffff; --accent-color: #48D1CC;
+  
+  /* --- EvolvedBackground (Nébuleuse recréée en CSS) --- */
+  --bg-color: #0b1014;
+  --bg-layer-1-image: 
+    radial-gradient(ellipse at 70% 30%, rgba(72, 209, 204, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 80%, rgba(72, 100, 209, 0.3) 0%, transparent 40%);
+  --bg-layer-2-texture: 
+    /* Poussière d'étoiles en CSS */
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 2px),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12) 1px, transparent 2px);
+  --bg-layer-3-gradient: linear-gradient(to top, #0b1621, #0b1014);
+  --bg-vignette: radial-gradient(ellipse at center, transparent 40%, #0b1014 100%);
+  --separator-bg: rgba(72, 209, 204, 0.3);
+}
+.theme-destiny .media-card-frame { padding: 15px; background: linear-gradient(145deg, rgba(11, 22, 33, 0.6), rgba(20, 30, 40, 0.8)); border: 1px solid #48D1CC; box-shadow: 0 0 25px rgba(72, 209, 204, 0.2), inset 0 0 10px rgba(72, 209, 204, 0.1); clip-path: polygon(0 15px, 15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+.theme-destiny .media-card { background: transparent; padding: 0; }
+
+/* --- NIER AUTOMATA --- */
+.theme-nier { --font-title: 'Share Tech Mono', monospace; --font-main: 'Poppins', sans-serif; --text-color: #333; --title-color: #111; --accent-color: #424242; --bg-layer-1-image: linear-gradient(to top, rgba(0,0,0,0.2), transparent); --bg-layer-2-texture: url('/textures/concrete-wall.png'); --bg-color: #BDBDBD; --separator-bg: rgba(66, 66, 66, 0.3); }
+.theme-nier .media-card-frame { padding: 20px; background: #BDBDBD; border: 1px solid #757575; position: relative; box-shadow: 0 5px 10px rgba(0,0,0,0.3);}
+.theme-nier .media-card-frame::before { content: ''; position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px; border: 1px dashed rgba(0,0,0,0.3); }
+.theme-nier .media-card { background: #E0E0E0; }
+
+/* --- PRINCIER 2 - Le Trône d'Ivoire et d'Or --- */
+.theme-princier-2 { --font-title: 'Cinzel', serif; --font-main: 'Crimson Text', serif; --text-color: #2c3e50; --title-color: #D4AF37; --accent-color: #D4AF37; --bg-color: #fdfbf5; --bg-layer-1-image: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.8), transparent 70%); --bg-layer-2-texture: url('/textures/white-marble.png'); --separator-bg: rgba(212, 175, 55, 0.3); }
+.theme-princier-2 .media-card-frame { padding: 40px; background: linear-gradient(to bottom, #F5F5F5, #FAF6F0); border: 2px solid #D4AF37; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(212, 175, 55, 0.1); position: relative; }
+.theme-princier-2 .media-card-frame::before, .theme-princier-2 .media-card-frame::after { content: '⚜'; font-size: 24px; color: #D4AF37; position: absolute; }
+.theme-princier-2 .media-card-frame::before { top: 5px; left: 10px; }
+.theme-princier-2 .media-card-frame::after { bottom: 5px; right: 10px; transform: rotate(180deg); }
+.theme-princier-2 .media-card { background: transparent; padding: 0; }
+
+/* Spécificité ERv5 demandée pour les titres, corrigée pour cibler h1 */
+.theme-princier-2 .media-list h1 {
+  font-family: 'Cinzel Decorative', serif;
+  color: #c9a552; /* Couleur --lantern-yellow du thème Hunt, pour un match parfait */
+}
+
+/* --- CASTLEVANIA - Symphonie de la Nuit (Evolved) --- */
+.theme-castlevania {
+  --font-title: 'MedievalSharp', cursive; /* Police plus gothique et unique */
+  --font-main: 'Lora', serif;
+  --font-special: 'MedievalSharp', cursive; /* Police spéciale pour l'horloge/date */
+  --text-color: #5a3e2b; /* Texte plus sombre pour un meilleur contraste sur le parchemin */
+  --title-color: #B71C1C;
+  --accent-color: #ffd700;
+  --separator-bg: rgba(44, 29, 18, 0.5); /* Couleur pierre sombre, unie et discrète */
+
+  /* --- EvolvedBackground - Mur du château --- */
+  --bg-color: #1a1a1a;
+  --bg-layer-2-texture: url('/textures/dark-brick-wall.png'); /* Fond de briques sombres */
+  --bg-vignette: radial-gradient(ellipse at center, transparent 30%, #000 110%);
+  --bg-blend-mode: multiply;
+
+  --card-border: none;
+  --card-shadow: none;
+}
+
+/* CADRE DE L'ITEM CONSERVÉ COMME DEMANDÉ */
+.theme-castlevania .media-card-frame {
+  padding: 20px;
+  background: #fdf5e6 url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGIwVFBkiHxweHBwgJC4nJRMUFhMXGBsbHRsVEQ//////////////////////////////////////////////////////////////////////////////////////////////////wAALCAAsACwBAREA/8QAHAABAAICAwEAAAAAAAAAAAAAAAYHBAUBAgMI/9oACAEBAAAAAPfQAACgAyoCgAAAAAADGVrGgA+z1nO3bAH7+Hj8uG+gA+3nO9nU/QAfe5nNlq9AD9O05TQAe4yJmZkAPHwAAAAAABgAAAf/EACsQAAEEAQIDBwUBAAAAAAAAAAECAwQFABEGEhMhMUEHFCJRYSIjMkJhcf/aAAgBAQABPwD9okpSknAABJPkBk03rOmU+plu4wVqBwQlYJ/K7pajQWVPzJDcdpAyVrUEge5NMX/TjDyGpF3htrWcBKlgkn6FfUqNCYVIlyG2GU81rUEgfk03q+mXXOmi7Q1LzgNhwFWfoV3VNEhOlp+7RUqBwQFnI+1Vd4tV0bU9ap7EtCDgltQVsfl3jT8G7W2Ra5iSpqQgJWAcHBII/YjvXWtS0zeG7JbrWzKYchIfWtbgBCipxOCM9PCjv9M6lqKzNudqajv8A4lZCnB/uIzSmp6hY71Gsl4tTEduWFFpbTgcBKeYIzx4GvS2q6hcb3LsV5tjcR+Oyl4LQ4FBQUogYI48aK2u4yZc6BEnsvSYJAkNJOVNkjOD9jXt/1HqNyuq7Ne7UzEltMJeHlrCgQpRGOOOMUqVChT4qo0+O2/HcGFtrSFJUPqDWkaTaNJR3GbY++6HSFK8ZQUfAAcJHArStM23SjLrEB15wOqClF1QUcgY4wBX/xAAmEQACAQMDAwQDAAAAAAAAAAABAgMABBEFEhMhECIxFEEiIzJC/9oACAECAQE/APgq1t7icZhiZwO4HA/Vb21t7bJljCFuCcdRTuUUs7BVHJJ4FVt1PdSNGsXhA92JyePYVjZ2Nrhv8AqzJwcHlE/t57UuTk5OTXhQv4gQSq/8AkI5J9818pB5Ff/EACgRAAICAQQBAwQDAAAAAAAAAAECAAMRBBIhBRATFCIyQRQiM0Jhcf/aAAgBAwEBPwD+goqR1DKwIPQg8zJq1B2wGxtB52jgH89xNdU1X7t4S2245CgflR7n2m1tN19tji+458tOQPyJ6mZV1FtdTLLi8Rj4R7Ecj89hE6l0z7N5SyN5Vi5UfIPuPoR0R3PIn//2Q=="); /* Texture parchemin */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  border: 10px solid #2c1d12;
+  border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAArVJREFUaAXtV8tOFEEQ/s45M7OzsSAb8DBI7Bx4Ah5Apw0GQuKkCcbDgFhKBCds6MmLsPAQSNw4eAA2UoQjD7CEiRMnYOMhJ3c3k80MvI8qQVFVMzPzEzjV1dVTfV19vbo7+NcF/weC+O1/yF8oPj34IHFmZmaW3NxcP4fD8RCSyeQz8/n8z3A4nIeGhn4mIOS3goB+v3+L2+3+cnJy8sI4jn8AIFdXVy8ZDocfEovFtgBiA2AMYwzS6/V/kEgkvsM4jcFg8B/keX7A6/W+AWCz2fxMJpM/AM4bjcbH+v3+3wAwm82eMxgMXwKIr16v/wXGMAZpr9c7B8Bms3kCgYDP2u22pVKpf/P5/CePx+MNgGq1eicSiXwGgG63+xIBcwDY7XZHZrP5oHA4nNu2bRu2b98+B8A0Ta+FQuFLAMKApmnvG43G02Kx+LdYLL5pNBp/jMfj/YyxAXAWgM1ir9f7RyaT+S6Xy/0NAP/t7u5m3/d/jY+PT2Hcj/x+P+x2uy8YjcbD9Xr9zWQyuZ1Op3sAdru993g8/p5lWS6SyeR/APB5nmedpultdrt9J5VK/RwhJEmqbrd7LxaL/bVarY9lWV6SJIUA8Dw/EIlE/gXAGIZsNBp/aDQa30VR9AMAgNVq/VksFv8UwBgmGIZhAKCU4zi9gAD4Q0KyLMvjZrP5WyKRyG632x8B4P0zYwwYhhGEEGOMwX23ACCEqNVqfTabza+VSqX7hRDyvK+rq5tcXV1dZBiGEAJYlhVFUZIkSaPR6DcAcrkcDof5fD6lUqk4nU7xeDySySSdThdCCAgh5Hnebrd7o9GoVCqVcrnck0QiMRgMHk3TfPM838/n889isfgj/PwAOp1udjwe/wPzE8B8fM0gMwAAAABJRU5ErkJggg==) 20 stretch;
+}
+.theme-castlevania .media-card {
+  background: transparent;
+  padding: 5px;
+}
+
+/* --- HALLOWEEN - La Nuit des Farces (ERv5) --- */
+.theme-halloween {
+  /* --- Palette de couleurs (ERv5) --- */
+  --midnight-purple: #2c0e3a;
+  --pumpkin-orange: #f37722;
+  --slime-green: #9acd32;
+  --ghostly-white: #f0f0f0;
+  --candy-corn-yellow: #f8b62d;
+
+  /* --- Variables de Thème --- */
+  --text-color: var(--ghostly-white);
+  --title-color: var(--pumpkin-orange);
+  --accent-color: var(--slime-green);
+  --separator-bg: rgba(154, 205, 50, 0.3);
+
+  /* --- EvolvedBackground (ERv5) - Ciel Hanté --- */
+  --bg-color: var(--midnight-purple);
+  --bg-layer-1-image:
+    /* Lueur de citrouilles et de chaudrons */
+    radial-gradient(ellipse at 20% 100%, var(--pumpkin-orange) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 100%, var(--slime-green) 0%, transparent 40%);
+  --bg-layer-2-texture: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80 80 Q90 90 100 80 T120 80' fill='none' stroke='rgba(240,240,240,0.1)' stroke-width='2'/%3E%3Cpath d='M20 30 Q25 20 30 30 T40 30' fill='none' stroke='rgba(240,240,240,0.1)' stroke-width='2'/%3E%3Cpath d='M150 120 L155 115 L160 120 L155 125 Z' fill='rgba(240,240,240,0.2)'/%3E%3C/svg%3E"); /* Fantômes et chauves-souris */
+  --bg-vignette: radial-gradient(ellipse at center, transparent 60%, var(--midnight-purple) 90%);
+
+  /* --- Typographie (ERv5) --- */
+  --font-title: 'Creepster', cursive;
+  --font-main: 'Nunito', sans-serif;
+
+  /* --- EvolvedFrames (ERv5) - Friandise Empoisonnée --- */
+  --frame-padding: 20px;
+  --frame-radius: 8px;
+  --frame-shadow: 0 8px 25px rgba(0,0,0,0.7);
+
+  /* Loi de Dissociation : La Bordure (Toiles d'araignée) */
+  --newgen-bg: linear-gradient(135deg, var(--pumpkin-orange), var(--candy-corn-yellow));
+  --newgen-border-image-source: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%232c0e3a' stroke-width='2'%3E%3Cpath d='M0,0 L50,50 M0,25 L50,50 M0,50 L50,50'/%3E%3Cpath d='M25,0 A25,25 0 0,1 50,25'/%3E%3Cpath d='M50,0 A50,50 0 0,1 100,50'/%3E%3C/g%3E%3C/svg%3E");
+  --newgen-border-image-slice: 40;
+  --newgen-border-image-width: 40px;
+  
+  /* Loi de Dissociation : Le Sanctuaire (Bonbons) */
+  --card-bg-color: radial-gradient(at center, #3a1a4a, var(--midnight-purple));
+  --card-border: 1px solid rgba(243, 119, 34, 0.4);
+  --card-radius: 4px;
+}
+
+/* --- Keyframes pour l'animation (ERv5) --- */
+@keyframes halloween-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
+}
+
+/* --- Spécificités Typographiques (Loi Fondamentale ERv5) --- */
+.theme-halloween h3 {
+  font-size: 2rem;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0px var(--slime-green), 4px 4px 0px rgba(0,0,0,0.4);
+}
+
+.theme-halloween .media-card:hover {
+  animation: halloween-shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  box-shadow: 0 0 20px 5px var(--slime-green);
+}
+
+/* --- HALLOWEEN 2 - Les Contes de la Crypte (Evolved) --- */
+.theme-halloween-2 {
+  --font-title: 'Creepster', cursive; --font-main: 'Nunito', sans-serif; --text-color: #fdfdfd; --title-color: #f39c12; --accent-color: #f39c12; --bg-color: #000; --bg-layer-2-texture: url('/textures/foggy-birds.png'); --frame-padding: 10px; --separator-bg: rgba(243, 156, 18, 0.3); }
+.theme-halloween-2 .media-card-frame { padding: 10px; background: #1a1a1a; border: 1px solid #f39c12; box-shadow: inset 0 0 15px #f39c12, 0 0 10px #f39c12; border-radius: 5px;}
+.theme-halloween-2 .media-card { background: transparent; }
+
+/* --- JOJAL - La Fraisière Moderne (ERv5 Re-refonte) --- */
+.theme-jojal {
+  /* Palette Douce & Moderne */
+  --strawberry-red: #ff6b81;
+  --leaf-green: #7bed9f;
+  --cream-white: #FAF6F0; /* Blanc cassé pour le confort visuel */
+  --dark-chocolate: #49274b;
+  --light-pink: #ffe0e6;
+
+  /* Variables de Thème */
+  --text-color: var(--dark-chocolate);
+  --title-color: var(--strawberry-red);
+  --accent-color: var(--leaf-green);
+  --separator-bg: rgba(255, 107, 129, 0.3);
+
+  /* Fond Crème avec Éclats de Fraises */
+  --bg-color: var(--cream-white);
+  --bg-layer-2-texture: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpath id='leaf' d='M 0 0 C 5 5 5 10 0 15 Z' fill='%237bed9f'/%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='10' fill='%23ff6b81' opacity='0.7'/%3E%3Cuse href='%23leaf' x='48' y='35' transform='rotate(15 50 50)'/%3E%3Ccircle cx='150' cy='120' r='12' fill='%23ff6b81' opacity='0.7'/%3E%3Cuse href='%23leaf' x='148' y='105' transform='rotate(15 150 120)'/%3E%3Ccircle cx='80' cy='170' r='8' fill='%23ff6b81' opacity='0.7'/%3E%3Cuse href='%23leaf' x='78' y='155' transform='rotate(15 80 170)'/%3E%3Ccircle cx='180' cy='30' r='9' fill='%23ff6b81' opacity='0.7'/%3E%3Cuse href='%23leaf' x='178' y='15' transform='rotate(15 180 30)'/%3E%3C/svg%3E");
+  --bg-vignette: radial-gradient(ellipse at center, transparent 70%, rgba(255, 224, 230, 0.5) 100%);
+
+  /* Typographie Gourmande */
+  --font-title: 'Tangerine', cursive;
+  --font-main: 'Lora', serif;
+
+  /* Cadre "Evolved" - Minimaliste & Chic */
+  --frame-padding: 20px;
+  --frame-radius: 12px;
+  --frame-shadow: 0 10px 25px rgba(73, 39, 75, 0.15);
+
+  /* Le cadre extérieur prend une couleur et une légère bordure */
+  --newgen-bg: var(--light-pink);
+  --newgen-border: 1px solid rgba(255, 107, 129, 0.5);
+
+  /* La carte intérieure est la "crème" */
+  --card-bg-color: var(--cream-white);
+  --card-border: none;
+  --card-radius: 8px; /* Coins arrondis plus doux */
+}
+
+.theme-jojal h1 {
+  font-size: 3em; /* Ajustement pour la police Tangerine */
+  line-height: 0.4; /* Réduit la hauteur de la "boîte" de la police pour éviter le décalage */
+  padding-bottom: 0.2em; /* Ajoute un petit espace en dessous pour compenser le line-height réduit */
+}
+
+/* Nom de l'oeuvre stylisé */
+.theme-jojal h3 {
+  font-size: 2rem; /* Taille ajustée pour une meilleure harmonie */
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(255, 224, 230, 0.8);
+}
+
+
+/* --- FINAL FANTASY 14 - Le Gold Saucer (ERv5 Re-refonte) --- */
+.theme-ff14 {
+  /* Palette Flashy & Luxueuse du Gold Saucer */
+  --gold-saucer-gold: #ffd700;
+  --deep-purple: #1e133b;
+  --magenta-flash: #ff00ff;
+  --cyan-light: #00e5ff;
+  --pure-white: #ffffff;
+
+  /* Variables de Thème */
+  --text-color: var(--pure-white);
+  --title-color: var(--gold-saucer-gold);
+  --accent-color: var(--magenta-flash);
+  --separator-bg: rgba(255, 215, 0, 0.3);
+
+  /* Fond Nuit Étoilée avec des Néons */
+  --bg-color: var(--deep-purple);
+  --bg-layer-1-image: 
+    /* Faisceaux de néons */
+    linear-gradient(45deg, rgba(255, 0, 255, 0.2) 0%, transparent 50%),
+    linear-gradient(-45deg, rgba(0, 229, 255, 0.2) 0%, transparent 50%);
+  --bg-layer-2-texture: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffd700' fill-opacity='0.4'%3E%3Ccircle cx='25' cy='25' r='2'/%3E%3Ccircle cx='75' cy='75' r='2'/%3E%3Ccircle cx='25' cy='75' r='1'/%3E%3Ccircle cx='75' cy='25' r='1'/%3E%3C/g%3E%3C/svg%3E"); /* Paillettes dorées */
+  --bg-vignette: radial-gradient(ellipse at center, transparent 50%, #1e133b 90%);
+
+  /* Typographie Audacieuse */
+  --font-title: 'Playfair Display', serif;
+  --font-main: 'Poppins', sans-serif;
+
+  /* Cadre "Evolved" - Ticket Gagnant */
+  --frame-padding: 5px; /* Cadre fin pour l'effet ticket */
+  --frame-radius: 10px;
+  --frame-shadow: 0 0 20px var(--gold-saucer-gold), 0 0 35px var(--magenta-flash);
+
+  /* Le cadre extérieur est un dégradé doré */
+  --newgen-bg: linear-gradient(145deg, var(--gold-saucer-gold), #ffb700);
+
+  /* La carte intérieure est le ticket sombre et stylé */
+  --card-bg-color: #2c1f4a;
+  --card-border: 1px solid var(--cyan-light);
+  --card-radius: 8px;
+  --card-padding: 20px;
+}
+/* Le padding est maintenant sur la carte intérieure */
+.theme-ff14 .media-card {
+  padding: 20px;
+}
+
+/* Titres qui en jettent */
+.theme-ff14 h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 5px var(--pure-white), 0 0 10px var(--magenta-flash), 0 0 15px var(--magenta-flash);
+}
+
+/* --- THEMES "COCO" --- */
+/* --- DESTINY - Échos du Voyageur (Evolved) --- */
+/* ... */
+
+/* --- HUNT: SHOWDOWN - Renaissance ERv5 --- */
+.theme-hunt {
+  /* --- Palette de couleurs (ERv5) --- */
+  --charcoal: #1b1b1b;
+  --rust: #803e2d;
+  --swamp-green: #4a5a3f;
+  --fog-white: #e4e2da;
+  --lantern-yellow: #c9a552;
+  --blood-red: #6e1e19;
+
+  /* --- Variables de Thème --- */
+  --text-color: var(--fog-white);
+  --title-color: var(--lantern-yellow);
+  --accent-color: var(--lantern-yellow);
+  --separator-bg: rgba(201, 165, 82, 0.2);
+  
+  /* --- EvolvedBackground (ERv5) - Le Bayou Brumeux --- */
+  --bg-color: var(--charcoal);
+  --bg-layer-1-image: 
+    radial-gradient(ellipse at 70% 80%, var(--swamp-green) 0%, transparent 50%),
+    radial-gradient(ellipse at 10% 20%, var(--rust) 0%, transparent 40%);
+  --bg-layer-2-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cdefs%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.05'/%3E%3Cg stroke='%23e4e2da' stroke-opacity='0.1' stroke-width='0.5'%3E%3Cpath d='M 10 0 v 20 l 10 10 h 10'/%3E%3Cpath d='M 80 120 v -20 l -10 -10 h -10'/%3E%3Cpath d='M 110 50 h -20 l -10 -10 v -10'/%3E%3C/g%3E%3C/svg%3E");
+  --bg-vignette: radial-gradient(ellipse at center, transparent 40%, var(--charcoal) 85%);
+
+  /* --- Typographie (ERv5) --- */
+  --font-title: 'Cinzel Decorative', serif;
+  --font-main: 'Crimson Text', serif;
+
+  /* --- EvolvedFrames (ERv5) - La Carte de Prime --- */
+  --frame-padding: 20px;
+  --frame-radius: 4px;
+  --frame-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+
+  /* Loi de Dissociation : La Bordure (Bords déchirés) */
+  --newgen-bg: transparent;
+  --newgen-border-image-source: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.05' numOctaves='3' result='noise'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23e4e2da' surfaceScale='2' result='light'%3E%3CfeDistantLight azimuth='45' elevation='60'/%3E%3C/feDiffuseLighting%3E%3CfeComposite in='light' in2='SourceAlpha' operator='in'/%3E%3C/filter%3E%3C/defs%3E%3Crect x='0' y='0' width='100%' height='100%' fill='%23c9a552'/%3E%3Crect x='0' y='0' width='100%' height='100%' filter='url(%23paper)'/%3E%3C/svg%3E");
+  --newgen-border-image-slice: 15;
+  --newgen-border-image-width: 15px;
+
+  /* Loi de Dissociation : Le Sanctuaire (Papier jauni) */
+  --card-bg-color: var(--fog-white);
+  --card-border: 1px solid rgba(201, 165, 82, 0.3);
+  --card-radius: 2px;
+}
+
+/* --- Spécificités Typographiques (Loi Fondamentale ERv5) --- */
+.theme-hunt h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0px rgba(27, 27, 27, 0.4), 2px 2px 3px rgba(0,0,0,0.5);
+}
+
+.theme-hunt p {
+  line-height: 1.7;
+  filter: blur(0.3px);
+}
+
+.theme-hunt .media-card:hover {
+  box-shadow: 0 0 15px 5px rgba(201, 165, 82, 0.4), inset 0 0 10px rgba(201, 165, 82, 0.2);
+} 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import axios from 'axios';
+import './Watch.css';
 
 interface MediaDbEntry {
   tmdb_id: number;
@@ -81,19 +82,26 @@ const Watch: React.FC = () => {
   }
 
   const renderMediaList = (list: Media[], title: string) => (
-    <div>
+    <div className="media-list">
       <h1>{title}</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
+      <div className="media-grid">
         {list.map((media) => (
-          <div key={`${media.media_type}-${media.tmdb_id}`} style={{ width: '200px' }}>
-            <img
-              src={media.poster_path ? `https://image.tmdb.org/t/p/w200${media.poster_path}` : 'https://via.placeholder.com/200x300'}
-              alt={media.title}
-              style={{ width: '100%' }}
-            />
-            <h3>{media.title}</h3>
-            <p>Sortie: {formatDate(media.release_date)}</p>
-            {media.status === 'watched' && media.abg_date && <p>Vu le: {media.abg_date}</p>}
+          <div key={`${media.media_type}-${media.tmdb_id}`} className="media-card-frame">
+            <div className="media-card">
+              <img
+                src={media.poster_path ? `https://image.tmdb.org/t/p/w200${media.poster_path}` : 'https://via.placeholder.com/200x300'}
+                alt={media.title}
+              />
+              <div className="media-card-info">
+                <h3>{media.title}</h3>
+                <div className="media-card-dates">
+                  <p>Sortie: {formatDate(media.release_date)}</p>
+                  {media.status === 'watched' && media.abg_date && (
+                    <p>Vu le: {media.abg_date}</p>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -101,8 +109,9 @@ const Watch: React.FC = () => {
   );
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'flex-start', width: '100%' }}>
+    <div className="watch-container">
       {renderMediaList(toWatchList, 'À regarder')}
+      <div className="evolved-separator"></div>
       {renderMediaList(watchedList, 'Vu')}
     </div>
   );

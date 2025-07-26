@@ -1,0 +1,89 @@
+.watch-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  /* gap et padding sont supprimés, les marges des frames gèrent l'espacement */
+}
+
+.evolved-separator {
+  width: var(--separator-width, 2px);
+  min-height: 100%;
+  background: var(--separator-bg, var(--text-color));
+  border-left: var(--separator-border-left);
+  border-right: var(--separator-border-right);
+  /* La marge est enlevée d'ici, elle est maintenant sur les frames */
+  transition: all 0.4s ease;
+}
+
+.media-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.media-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Ecart vertical restauré pour un meilleur équilibre */
+  align-items: center;
+}
+
+.media-card-frame {
+  width: 320px; /* Largeur augmentée pour compenser le box-sizing et retrouver l'échelle */
+  margin: 0 1rem; /* Marge horizontale pour éloigner les colonnes du centre */
+  transition: all 0.3s ease; /* Ajout d'une transition sur le cadre lui-même */
+}
+
+.media-card {
+  /* Le padding est enlevé d'ici */
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+  background-color: var(--card-bg-color);
+  border-radius: var(--card-radius);
+  height: 100%; /* S'assure que la carte remplit son frame */
+  display: flex; /* Ajout pour une meilleure gestion du contenu interne */
+  flex-direction: column; /* Ajout */
+}
+
+.media-card:hover {
+  /* Tous les effets de survol sont maintenant désactivés pour une interface plus statique */
+  /* box-shadow: 0 8px 25px rgba(0,0,0,0.5); */
+  /* border-color: var(--accent-color); */
+}
+
+.media-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3; /* Garde le ratio de l'affiche */
+  object-fit: cover;
+  border-radius: var(--card-radius, 8px);
+}
+
+.media-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pousse le titre en haut et les dates en bas */
+  flex-grow: 1; /* Fait en sorte que cette section prenne toute la place restante */
+  padding-top: 10px; /* Espace entre l'image et le texte */
+}
+
+.media-card-info h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1em;
+  /* --- Ajouts pour la troncature --- */
+  white-space: nowrap;      /* Empêche le retour à la ligne */
+  overflow: hidden;         /* Cache le texte qui dépasse */
+  text-overflow: ellipsis;  /* Ajoute "..." à la fin */
+}
+
+.media-card-dates {
+  min-height: 2.4em; /* Rétablit la hauteur minimale pour garantir l'espace pour 2 dates */
+}
+
+.media-card-dates p {
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.2em;
+} 
