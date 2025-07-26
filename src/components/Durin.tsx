@@ -116,6 +116,20 @@ const Durin: React.FC = () => {
       const toWatchLines = toWatchText.split('\n').filter(l => l.trim() !== '');
       const watchedLines = watchedText.split('\n').filter(l => l.trim() !== '');
 
+      // --- Début de la validation ---
+      const allLines = [...toWatchLines, ...watchedLines];
+      for (const line of allLines) {
+        const parts = line.trim().split(' ');
+        const id = parseInt(parts[1], 10);
+        if (parts.length < 2 || isNaN(id)) {
+          setMessage(`Erreur de format : La ligne "${line}" est invalide. L'ID doit être un nombre.`);
+          setMessageType('error');
+          setLoading(false);
+          return; // Bloque la sauvegarde
+        }
+      }
+      // --- Fin de la validation ---
+
       const toWatchItems = toWatchLines.map(line => parseFromString(line, 'to-watch'));
       const watchedItems = watchedLines.map(line => parseFromString(line, 'watched'));
 

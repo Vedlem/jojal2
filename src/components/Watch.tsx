@@ -49,7 +49,13 @@ const Watch: React.FC = () => {
 
         if (error) throw error;
 
-        const mediaInfoPromises = mediaFromDb.map(async (item: MediaDbEntry) => {
+        // On filtre les données corrompues AVANT de faire les appels API
+        const validMediaFromDb = mediaFromDb.filter(item => {
+          const id = Number(item.tmdb_id);
+          return id && !isNaN(id);
+        });
+
+        const mediaInfoPromises = validMediaFromDb.map(async (item: MediaDbEntry) => {
           try {
             const mediaType = item.media_type.toLowerCase();
             const response = await axios.get(
