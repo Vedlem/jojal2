@@ -9,41 +9,39 @@ interface MediaDbEntry {
   media_type: 'MOVIE' | 'TV';
   abg_date: string | null;
   status: 'to-watch' | 'watched';
+  note: string | null; // Pour stocker les commentaires
 }
 
 const formatToString = (item: Partial<MediaDbEntry>): string => {
   const idPart = typeof item.tmdb_id === 'string' && isNaN(parseInt(item.tmdb_id as string, 10))
     ? `"${item.tmdb_id}"`
     : item.tmdb_id;
-  return `${item.media_type} ${idPart}${item.abg_date ? ' ' + item.abg_date : ''}`;
+  
+  const datePart = item.abg_date ? ' ' + item.abg_date : '';
+  const notePart = item.note ? ' ' + item.note : '';
+
+  return `${item.media_type} ${idPart}${datePart}${notePart}`;
 };
 
 const parseFromString = (line: string, status: 'to-watch' | 'watched'): Partial<MediaDbEntry> => {
   const trimmedLine = line.trim();
-  const firstSpaceIndex = trimmedLine.indexOf(' ');
-  if (firstSpaceIndex === -1) return { tmdb_id: NaN };
+  
+  // Regex pour extraire TYPE, ID, DATE optionnelle, et la NOTE (tout le reste)
+  const regex = /^(\S+)\s+("([^"]+)"|(\S+))(?:\s+([\d\w-]+))?\s*(.*)?$/;
+  const match = trimmedLine.match(regex);
 
-  const type = trimmedLine.substring(0, firstSpaceIndex).toUpperCase() as 'MOVIE' | 'TV';
-  const rest = trimmedLine.substring(firstSpaceIndex + 1);
-
-  let idPart: number | string;
-  let datePart: string | null = null;
-
-  if (rest.startsWith('"')) {
-    const lastQuoteIndex = rest.lastIndexOf('"');
-    if (lastQuoteIndex > 0) {
-      idPart = rest.substring(1, lastQuoteIndex);
-      datePart = rest.substring(lastQuoteIndex + 1).trim() || null;
-    } else {
-      idPart = NaN; // Format invalide
-    }
-  } else {
-    const parts = rest.split(' ');
-    idPart = parseInt(parts[0], 10);
-    datePart = parts[1] || null;
+  if (!match) {
+    return { tmdb_id: NaN };
   }
 
-  return { media_type: type, tmdb_id: idPart, abg_date: datePart, status: status };
+  const type = match[1].toUpperCase() as 'MOVIE' | 'TV';
+  const idPart = match[3] || match[4];
+  const datePart = match[5] || null;
+  const notePart = match[6] || null;
+
+  const tmdb_id = isNaN(parseInt(idPart, 10)) ? idPart : parseInt(idPart, 10);
+
+  return { media_type: type, tmdb_id, abg_date: datePart, status, note: notePart };
 };
 
 const Durin: React.FC = () => {
@@ -148,24 +146,33 @@ const Durin: React.FC = () => {
           return; // Bloque la sauvegarde
         }
       }
-      // --- Fin de la validation ---
+      // --- Fin de la validation de format ---
 
       const toWatchItems = toWatchLines.map(line => parseFromString(line, 'to-watch'));
       const watchedItems = watchedLines.map(line => parseFromString(line, 'watched'));
+      
+      const allItems = [...toWatchItems, ...watchedItems];
 
-      // Vérification des doublons
-      const watchedKeys = new Set(watchedItems.map(item => `${item.media_type}-${item.tmdb_id}`));
-      const conflictingItems = toWatchItems.filter(item => watchedKeys.has(`${item.media_type}-${item.tmdb_id}`));
+      // Vérification des doublons (intra-liste et inter-listes)
+      const seen = new Set();
+      const duplicates = allItems.filter(item => {
+        const key = `${item.media_type}-${item.tmdb_id}`;
+        if (seen.has(key)) {
+          return true;
+        }
+        seen.add(key);
+        return false;
+      });
 
-      if (conflictingItems.length > 0) {
-        const conflictList = conflictingItems.map(item => `${item.media_type} ${item.tmdb_id}`).join(', ');
-        setMessage(`Erreur : L'oeuvre suivante est présente dans les deux listes : ${conflictList}. Veuillez la retirer d'une des deux listes.`);
+      if (duplicates.length > 0) {
+        const conflictList = duplicates.map(item => `${item.media_type} ${item.tmdb_id}`).join(', ');
+        setMessage(`Erreur : L'oeuvre(s) suivante(s) est/sont en double : ${conflictList}. Veuillez corriger les doublons.`);
         setMessageType('error');
         setLoading(false);
         return; // Bloque la sauvegarde
       }
 
-      const newDbState = [...toWatchItems, ...watchedItems];
+      const newDbState = allItems;
 
       // Upsert
       const { error: upsertError } = await supabase.from('media').upsert(newDbState, {

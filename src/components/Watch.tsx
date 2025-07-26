@@ -59,14 +59,14 @@ const Watch: React.FC = () => {
               if (mediaType === 'tvshow') {
                 mediaType = 'tv'; // Correction pour l'API TMDB qui attend "tv" et non "tvshow"
               }
-              const response = await axios.get(
+          const response = await axios.get(
                 `https://api.themoviedb.org/3/${mediaType}/${numericId}?api_key=${TMDB_API_KEY}&language=fr-FR`
-              );
-              return {
-                ...item,
-                title: mediaType === 'movie' ? response.data.title : response.data.name,
-                poster_path: response.data.poster_path,
-                release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
+          );
+          return {
+            ...item,
+            title: mediaType === 'movie' ? response.data.title : response.data.name,
+            poster_path: response.data.poster_path,
+            release_date: mediaType === 'movie' ? response.data.release_date : response.data.first_air_date,
               };
             } catch (error) {
               console.error(`Erreur pour TMDB ID ${item.tmdb_id}:`, error);
@@ -90,8 +90,40 @@ const Watch: React.FC = () => {
 
         const allMedia: Media[] = await Promise.all(mediaInfoPromises);
 
-        setToWatchList(allMedia.filter(m => m.status === 'to-watch'));
-        setWatchedList(allMedia.filter(m => m.status === 'watched'));
+        // Tri pour la liste "Vu"
+        const watched = allMedia.filter(m => m.status === 'watched');
+        
+        // Helper pour parser les dates custom "jour-Mois-année"
+        const monthMap: { [key: string]: number } = {
+          "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5, 
+          "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+        };
+        const parseCustomDate = (dateStr: string) => {
+          if (!dateStr) return new Date(0);
+          const parts = dateStr.split('-');
+          if (parts.length !== 3) return new Date(0);
+          const day = parseInt(parts[0], 10);
+          const month = monthMap[parts[1]];
+          const year = parseInt(parts[2], 10);
+          if (isNaN(day) || month === undefined || isNaN(year)) return new Date(0);
+          return new Date(year, month, day);
+        };
+
+        watched.sort((a, b) => {
+          const dateA = parseCustomDate(a.abg_date);
+          const dateB = parseCustomDate(b.abg_date);
+          return dateB.getTime() - dateA.getTime(); // Tri décroissant
+        });
+        
+        // Mélange pour la liste "À regarder" (Fisher-Yates shuffle)
+        const toWatch = allMedia.filter(m => m.status === 'to-watch');
+        for (let i = toWatch.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [toWatch[i], toWatch[j]] = [toWatch[j], toWatch[i]];
+        }
+
+        setToWatchList(toWatch);
+        setWatchedList(watched);
 
       } catch (error) {
         console.error('Error fetching data:', error);
