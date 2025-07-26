@@ -5,24 +5,45 @@ import type { RealtimeChannel, RealtimePresenceState } from '@supabase/supabase-
 // Interfaces and helper functions
 interface MediaDbEntry {
   id: number;
-  tmdb_id: number;
+  tmdb_id: number | string; // Accepte un nombre ou un texte
   media_type: 'MOVIE' | 'TV';
   abg_date: string | null;
   status: 'to-watch' | 'watched';
 }
 
 const formatToString = (item: Partial<MediaDbEntry>): string => {
-  return `${item.media_type} ${item.tmdb_id}${item.abg_date ? ' ' + item.abg_date : ''}`;
+  const idPart = typeof item.tmdb_id === 'string' && isNaN(parseInt(item.tmdb_id as string, 10))
+    ? `"${item.tmdb_id}"`
+    : item.tmdb_id;
+  return `${item.media_type} ${idPart}${item.abg_date ? ' ' + item.abg_date : ''}`;
 };
 
 const parseFromString = (line: string, status: 'to-watch' | 'watched'): Partial<MediaDbEntry> => {
-  const [type, id, date] = line.trim().split(' ');
-  return {
-    media_type: type.toUpperCase() as 'MOVIE' | 'TV',
-    tmdb_id: parseInt(id, 10),
-    abg_date: date || null,
-    status: status,
-  };
+  const trimmedLine = line.trim();
+  const firstSpaceIndex = trimmedLine.indexOf(' ');
+  if (firstSpaceIndex === -1) return { tmdb_id: NaN };
+
+  const type = trimmedLine.substring(0, firstSpaceIndex).toUpperCase() as 'MOVIE' | 'TV';
+  const rest = trimmedLine.substring(firstSpaceIndex + 1);
+
+  let idPart: number | string;
+  let datePart: string | null = null;
+
+  if (rest.startsWith('"')) {
+    const lastQuoteIndex = rest.lastIndexOf('"');
+    if (lastQuoteIndex > 0) {
+      idPart = rest.substring(1, lastQuoteIndex);
+      datePart = rest.substring(lastQuoteIndex + 1).trim() || null;
+    } else {
+      idPart = NaN; // Format invalide
+    }
+  } else {
+    const parts = rest.split(' ');
+    idPart = parseInt(parts[0], 10);
+    datePart = parts[1] || null;
+  }
+
+  return { media_type: type, tmdb_id: idPart, abg_date: datePart, status: status };
 };
 
 const Durin: React.FC = () => {
@@ -119,10 +140,9 @@ const Durin: React.FC = () => {
       // --- Début de la validation ---
       const allLines = [...toWatchLines, ...watchedLines];
       for (const line of allLines) {
-        const parts = line.trim().split(' ');
-        const id = parseInt(parts[1], 10);
-        if (parts.length < 2 || isNaN(id)) {
-          setMessage(`Erreur de format : La ligne "${line}" est invalide. L'ID doit être un nombre.`);
+        const parsed = parseFromString(line, 'to-watch');
+        if (!parsed.tmdb_id || (typeof parsed.tmdb_id === 'number' && isNaN(parsed.tmdb_id))) {
+          setMessage(`Erreur de format : La ligne "${line}" est invalide. Utilisez un ID numérique ou un titre entre guillemets.`);
           setMessageType('error');
           setLoading(false);
           return; // Bloque la sauvegarde

@@ -4,7 +4,7 @@ import axios from 'axios';
 import './Watch.css';
 
 interface MediaDbEntry {
-  tmdb_id: number;
+  tmdb_id: number | string;
   media_type: 'MOVIE' | 'TV';
   abg_date: string;
   status: 'to-watch' | 'watched';
@@ -56,6 +56,17 @@ const Watch: React.FC = () => {
         });
 
         const mediaInfoPromises = validMediaFromDb.map(async (item: MediaDbEntry) => {
+          // Si l'ID est une chaîne de caractères, on ne contacte pas l'API TMDB
+          if (typeof item.tmdb_id === 'string') {
+            return {
+              ...item,
+              title: item.tmdb_id, // Le titre est l'ID lui-même
+              poster_path: '',
+              release_date: '',
+            };
+          }
+
+          // Si l'ID est un nombre, on procède normalement
           try {
             const mediaType = item.media_type.toLowerCase();
             const response = await axios.get(
