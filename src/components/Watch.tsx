@@ -147,7 +147,7 @@ const Watch: React.FC = () => {
           <div key={`${media.media_type}-${media.tmdb_id}`} className="media-card-frame">
             <div className="media-card">
               <img
-                src={media.poster_path ? `https://image.tmdb.org/t/p/w200${media.poster_path}` : 'https://via.placeholder.com/200x300'}
+                src={media.poster_path ? `https://image.tmdb.org/t/p/w500${media.poster_path}` : 'https://via.placeholder.com/200x300'}
                 alt={media.title}
               />
               <div className="media-card-info">
