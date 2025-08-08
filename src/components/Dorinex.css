@@ -1,0 +1,131 @@
+.dorinex-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -100px;
+  text-align: center;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 2em;
+  color: #EAF0F1;
+}
+
+.wheel-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Espace réduit sous la roue */
+  height: 750px;
+  transform: scale(1.55);
+}
+
+
+.wheel-pointer {
+  /* On garde le positionnement mais on supprime la forme */
+  position: absolute;
+  top: 25.5%;
+  left: 83.5%;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  border: none;
+  filter: none; /* Le filtre est maintenant sur l'émoji */
+}
+
+.wheel-pointer::before {
+  content: '🫲';
+  font-size: 55px; /* Vous pouvez ajuster la taille de l'émoji ici */
+  display: inline-block;
+  filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+  
+  /* Rotation de base (90deg) + calibration.
+     Ajustez cette valeur pour calibrer. */
+
+}
+
+.wheel-center-content {
+  position: absolute;
+  width: 280px; /* = (innerRadius - innerBorderWidth) * 2 */
+  height: 280px;
+  background-color: #1E272E;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5) inset;
+}
+
+.wheel-center-text {
+  font-size: 10em;
+  color: #576574;
+  font-weight: bold;
+  user-select: none;
+}
+
+.winner-poster {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.spin-button {
+  padding: 15px 40px;
+  font-size: 1.8em; /* Bouton plus grand */
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(45deg, #6A82FB, #4834D4);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  outline: none;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 20;
+}
+
+.spin-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(72, 52, 212, 0.4);
+}
+
+.spin-button:disabled {
+  background: #576574;
+  cursor: not-allowed;
+}
+
+.result-text {
+  font-size: 2em; /* Taille ajustée */
+  color: #FFC312;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  animation: result-animation 0.8s ease-in-out;
+  padding: 8px 15px;
+  background-color: rgba(30, 39, 46, 0.8);
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes result-animation {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
