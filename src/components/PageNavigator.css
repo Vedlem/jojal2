@@ -1,0 +1,23 @@
+.page-navigator-container {
+  position: fixed;
+  top: 60px; /* En dessous du sélecteur de thème */
+  left: 15px;
+  z-index: 1000;
+}
+
+.page-navigator-btn {
+  background: var(--button-bg, #333);
+  color: #ffffff !important;
+  border: 1px solid var(--border-color, #555);
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.page-navigator-btn:hover {
+  background: var(--button-hover-bg, #444);
+  border-color: var(--accent-color, #646cff);
+}

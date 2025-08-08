@@ -3,6 +3,7 @@ import Watch from './components/Watch';
 import Durin from './components/Durin';
 import Dorinex from './components/Dorinex'; // Importer le nouveau composant
 import ThemeSelector from './components/ThemeSelector';
+import PageNavigator from './components/PageNavigator';
 import './App.css';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <div className="background-container"></div>
       <div className="App">
         <ThemeSelector />
+        <PageNavigator />
         <Routes>
           <Route path="/" element={<Watch />} />
           <Route path="/durin" element={<Durin />} />

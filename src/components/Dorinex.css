@@ -5,6 +5,10 @@
   justify-content: center;
   margin-top: -100px;
   text-align: center;
+  user-select: none; /* Empêche la sélection de texte */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
 }
 
 .loading-container {
@@ -82,7 +86,7 @@
   font-size: 1.8em;
   font-weight: bold;
   color: #EAF0F1;
-  background: #576574; /* Style du bouton désactivé devient le style par défaut */
+  background: #333333; /* Gris anthracite, très sobre */
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   cursor: pointer;
@@ -96,7 +100,7 @@
 
 .spin-button:hover:not(:disabled) {
   transform: translateY(-3px);
-  background: #6c7a89; /* Éclaircissement du gris au survol */
+  background: #444444; /* Éclaircissement très subtil */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   border-color: rgba(255, 255, 255, 0.2);
 }
@@ -136,3 +140,4 @@
     transform: scale(1) rotate(0deg);
   }
 }
+
