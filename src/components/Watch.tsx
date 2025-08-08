@@ -93,26 +93,41 @@ const Watch: React.FC = () => {
         // Tri pour la liste "Vu"
         const watched = allMedia.filter(m => m.status === 'watched');
         
-        // Helper pour parser les dates custom "jour-Mois-année"
         const monthMap: { [key: string]: number } = {
-          "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5, 
-          "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+          'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+          'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
         };
-        const parseCustomDate = (dateStr: string) => {
-          if (!dateStr) return new Date(0);
+
+        const parseDate = (dateStr: string | null): Date | null => {
+          if (!dateStr) return null;
+        
           const parts = dateStr.split('-');
-          if (parts.length !== 3) return new Date(0);
-          const day = parseInt(parts[0], 10);
-          const month = monthMap[parts[1]];
-          const year = parseInt(parts[2], 10);
-          if (isNaN(day) || month === undefined || isNaN(year)) return new Date(0);
-          return new Date(year, month, day);
+          
+          if (parts.length === 3) { // Format DD-Mon-YYYY
+            const day = parseInt(parts[0], 10);
+            const month = monthMap[parts[1]];
+            const year = parseInt(parts[2], 10);
+            if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+              return new Date(year, month, day);
+            }
+          } else if (parts.length === 2) { // Format Mon-YYYY
+            const month = monthMap[parts[0]];
+            const year = parseInt(parts[1], 10);
+            if (month !== undefined && !isNaN(year)) {
+              return new Date(year, month, 1); // Utilise le 1er du mois
+            }
+          }
+          
+          return null; // Format non reconnu
         };
 
         watched.sort((a, b) => {
-          const dateA = parseCustomDate(a.abg_date);
-          const dateB = parseCustomDate(b.abg_date);
-          return dateB.getTime() - dateA.getTime(); // Tri décroissant
+          const dateA = parseDate(a.abg_date);
+          const dateB = parseDate(b.abg_date);
+          if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+          if (dateA) return -1;
+          if (dateB) return 1;
+          return 0;
         });
         
         // Mélange pour la liste "À regarder" (Fisher-Yates shuffle)

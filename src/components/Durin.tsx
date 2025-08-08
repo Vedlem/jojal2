@@ -12,6 +12,36 @@ interface MediaDbEntry {
   title: string | null; // Titre descriptif
 }
 
+const monthMap: { [key: string]: number } = {
+  'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+  'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+};
+
+// Fonction pour parser les dates, y compris les formats incomplets
+const parseDate = (dateStr: string | null): Date | null => {
+  if (!dateStr) return null;
+
+  const parts = dateStr.split('-');
+  
+  if (parts.length === 3) { // Format DD-Mon-YYYY
+    const day = parseInt(parts[0], 10);
+    const month = monthMap[parts[1]];
+    const year = parseInt(parts[2], 10);
+    if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+      return new Date(year, month, day);
+    }
+  } else if (parts.length === 2) { // Format Mon-YYYY
+    const month = monthMap[parts[0]];
+    const year = parseInt(parts[1], 10);
+    if (month !== undefined && !isNaN(year)) {
+      return new Date(year, month, 1); // Utilise le 1er du mois
+    }
+  }
+  
+  return null; // Format non reconnu
+};
+
+
 const formatToString = (item: Partial<MediaDbEntry>): string => {
   const idPart = typeof item.tmdb_id === 'string' && isNaN(parseInt(item.tmdb_id as string, 10))
     ? `"${item.tmdb_id}"`
@@ -63,7 +93,19 @@ const Durin: React.FC = () => {
         
         setInitialData(data);
         setToWatchText(data.filter(item => item.status === 'to-watch').map(formatToString).join('\n'));
-        setWatchedText(data.filter(item => item.status === 'watched').map(formatToString).join('\n'));
+        
+        const sortedWatched = data
+          .filter(item => item.status === 'watched')
+          .sort((a, b) => {
+            const dateA = parseDate(a.abg_date);
+            const dateB = parseDate(b.abg_date);
+            if (dateA && dateB) return dateB.getTime() - dateA.getTime();
+            if (dateA) return -1; // Mettre A avant B si A a une date
+            if (dateB) return 1;  // Mettre B avant A si B a une date
+            return 0;
+          });
+
+        setWatchedText(sortedWatched.map(formatToString).join('\n'));
 
       } catch (error) {
         setMessage(`Erreur de chargement: ${(error as Error).message}`);
