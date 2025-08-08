@@ -52,8 +52,8 @@
 
 .wheel-center-content {
   position: absolute;
-  width: 280px; /* = (innerRadius - innerBorderWidth) * 2 */
-  height: 280px;
+  width: 400px; /* = (innerRadius - innerBorderWidth) * 2 */
+  height: 400px;
   background-color: #1E272E;
   border-radius: 50%;
   display: flex;
